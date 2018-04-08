@@ -137,7 +137,7 @@ Shader "Custom/planetSurface" {
 			float2 seed = IN.uv_MainTex + (_Center.xz + _Center.y) / 100000;
 
 			//IN.uv_MainTex += sin((IN.uv_MainTex.x + IN.uv_MainTex.y) * 1000) * 0.0005;//simplex(IN.uv_MainTex * 1000) * 0.0005;
-			IN.uv_MainTex += simplex(IN.uv_MainTex * 1000) * 0.0005;
+			IN.uv_MainTex += simplex(float2(IN.uv_MainTex.x * 2, IN.uv_MainTex.y) * 1000) * 0.0005;
 
 			fixed4 tex = tex2D(_MainTex, IN.uv_MainTex),
 				clouds = tex2D(_Clouds, uv_Clouds);
@@ -186,7 +186,7 @@ Shader "Custom/planetSurface" {
 				o.Albedo *= 0.8 * (1 - h + tex2D(_Detail2, uv_Detail2 + _Time[0] * 0.02).rgb * 2 * h);
 				*/
 
-			o.Albedo = (1 - clouds) * o.Albedo + min(clouds * tex2D(_Detail3, uv_Detail3).rgb * 8 * IN.intensity, 6);
+			o.Albedo = pow(IN.intensity, 2) * (1 - clouds) * o.Albedo + min(clouds * tex2D(_Detail3, uv_Detail3).rgb * 8 * pow(IN.intensity, 2), 6);
 		}
 		ENDCG
     } 
